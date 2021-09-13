@@ -1,0 +1,23 @@
+<div
+	class="course-wrapper"
+	fxLayout="column"
+	fxLayout.gt-xs="row"
+	[ngStyle]="{ width: '100%' }"
+	[ngStyle.gt-xs]="{ width: '100%', 'padding-left': '10px' }"
+	[ngStyle.gt-sm]="{ width: '940px', 'padding-left': '10px' }"
+	fxLayoutGap="10px"
+>
+	<div
+		*ngFor="let course of courses$ | async"
+		class="course"
+		[ngStyle]="{ width: '100%' }"
+		[ngStyle.gt-xs]="{ width: 'calc(50% - 10px)' }"
+		[ngStyle.gt-sm]="{ width: '300px' }"
+		[routerLink]="'../watch/' + course.id"
+	>
+		<div class="avatar">
+			<mat-icon>{{course.icon}}</mat-icon>
+		</div>
+		<h3 class="name">{{course.name}}</h3>
+	</div>
+</div>

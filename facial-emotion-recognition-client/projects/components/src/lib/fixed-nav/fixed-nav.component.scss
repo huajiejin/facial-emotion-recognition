@@ -1,0 +1,28 @@
+body {
+	padding-left: 300px;
+
+	&.xs {
+		padding-left: 0px;
+		padding-top: 80px;
+	}
+}
+
+.fixed-nav {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 300px;
+	height: 100vh;
+	border: 1px solid #eee;
+
+	&.xs {
+		display: flex;
+		justify-content: flex-end;
+		width: 100vw;
+		height: 80px;
+
+		> * {
+			margin: 0px 10px;
+		}
+	}
+}

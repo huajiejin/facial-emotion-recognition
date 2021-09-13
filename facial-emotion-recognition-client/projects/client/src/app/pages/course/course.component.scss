@@ -1,0 +1,46 @@
+@use '~@angular/material' as mat;
+
+$custom-palette: mat.define-palette(mat.$indigo-palette);
+
+:host {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 10px;
+}
+
+.course-wrapper {
+	flex-wrap: wrap;
+}
+
+.course {
+	flex-shrink: 0;
+	margin-bottom: 10px;
+	cursor: pointer;
+	box-shadow: 1px 2px 5px #ccc;
+
+	.avatar {
+		$icon-size: 80px;
+		
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 200px;
+		background-color: #f8f8f8;
+		background: mat.get-color-from-palette($custom-palette, 'darker');
+		color: mat.get-color-from-palette($custom-palette, 'darker-contrast');
+
+		.mat-icon {
+			width: $icon-size;
+			height: $icon-size;
+			font-size: $icon-size;
+		}		
+	}
+
+	.name {
+		margin: 0;
+		padding: 10px;
+		// background: mat.get-color-from-palette($my-palette, '500');
+		// color: mat.get-color-from-palette($my-palette, '500-contrast');
+	}
+}

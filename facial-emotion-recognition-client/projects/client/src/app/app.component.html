@@ -1,0 +1,18 @@
+<header>
+  <button mat-icon-button color="primary" class="home-btn" routerLink="">
+    <mat-icon>home</mat-icon>
+  </button>
+  <h1 class="title">{{(routeData$ | async)?.title || ''}}</h1>
+  <button *ngIf="isLogin$ | async; else toLogin" mat-button matTooltip="退出登录" class="login-btn" (click)="logout()">
+    <mat-icon>logout</mat-icon>
+  </button>
+  <ng-template #toLogin>
+    <button mat-button matTooltip="登录" class="logout-btn" routerLink="login">
+      <mat-icon>login</mat-icon>
+    </button>
+  </ng-template>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

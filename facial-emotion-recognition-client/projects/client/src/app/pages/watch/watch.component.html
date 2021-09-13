@@ -1,0 +1,22 @@
+<div
+	class="container"
+	fxLayout="column"
+	fxLayout.gt-xs="row"
+>
+	<div class="live-stream" >
+		<video src="/assets/videos/EV_VS_GAS.m4v" autoplay loop></video>
+	</div>
+	<div
+		class="info"
+		[ngStyle]="{width: '100%'}"
+		[ngStyle.gt-xs]="{width: '320px'}"
+	>
+		<div class="video" [ngStyle]="{display: (webcamStream$ | async) ? 'block' : 'none'}">
+			<video #webcam [srcObject]="webcamStream$ | async" autoplay></video>
+			<h3>{{ emotionText$ | async}}</h3>
+		</div>
+		<h3>学习了{{ playingTime$ | async }}</h3>
+		<button mat-raised-button (click)="toggleWebcam()">{{webcamButtonText$ | async}}</button>
+		<button mat-raised-button (click)="leave()">离开教室</button>
+	</div>
+</div>

@@ -1,0 +1,9 @@
+
+<ng-template [ngIf]="isLogin$ | async" [ngIfElse]="toLogin">
+	<h2>{{(user$ | async)?.name || ''}} 欢迎来到上课系统！</h2>
+	<button mat-raised-button color="primary" routerLink="course">选择课程</button>
+</ng-template>
+<ng-template #toLogin>
+	<h2>欢迎来到上课系统！请先登录</h2>
+	<button mat-raised-button color="primary" routerLink="login">登录</button>
+</ng-template>
