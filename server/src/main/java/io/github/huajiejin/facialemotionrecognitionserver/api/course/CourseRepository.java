@@ -1,4 +1,4 @@
-package io.github.huajiejin.facialemotionrecognitionserver.datajpa;
+package io.github.huajiejin.facialemotionrecognitionserver.api.course;
 
 import org.springframework.data.repository.CrudRepository;
 

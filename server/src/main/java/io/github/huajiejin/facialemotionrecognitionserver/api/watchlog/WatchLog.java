@@ -1,6 +1,8 @@
-package io.github.huajiejin.facialemotionrecognitionserver.datajpa;
+package io.github.huajiejin.facialemotionrecognitionserver.api.watchlog;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import io.github.huajiejin.facialemotionrecognitionserver.api.course.Course;
+import io.github.huajiejin.facialemotionrecognitionserver.datajpa.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,5 +25,7 @@ public class WatchLog {
 
     private Date endTime;
 
+    @Column(columnDefinition = "json")
+    @JsonRawValue
     private String emotion;
 }

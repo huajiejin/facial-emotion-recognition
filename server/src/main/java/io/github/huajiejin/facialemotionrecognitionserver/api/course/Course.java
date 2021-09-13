@@ -1,5 +1,6 @@
-package io.github.huajiejin.facialemotionrecognitionserver.datajpa;
+package io.github.huajiejin.facialemotionrecognitionserver.api.course;
 
+import io.github.huajiejin.facialemotionrecognitionserver.datajpa.User;
 import lombok.Data;
 
 import javax.persistence.*;
