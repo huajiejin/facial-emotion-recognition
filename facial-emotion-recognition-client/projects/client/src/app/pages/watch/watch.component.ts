@@ -94,7 +94,7 @@ export class WatchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   leave() {
     this.location.back()
-    this.ws.saveResults([]).subscribe(console.log)
+    // this.ws.saveResults([]).subscribe(console.log)
   }
 
   @HostListener('window:beforeunload', ['$event'])

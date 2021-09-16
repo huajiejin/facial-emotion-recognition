@@ -8,8 +8,6 @@ import { LocalStorageService } from 'projects/services/src/lib/local-storage.ser
 })
 export class DemoComponent implements OnInit {
 
-  public isLogin$ = this.ls.isLogin$
-
   public n1?: number
 
   public n2?: {v: number}

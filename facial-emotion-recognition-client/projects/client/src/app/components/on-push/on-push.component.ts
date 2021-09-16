@@ -15,8 +15,6 @@ export class OnPushComponent implements OnInit {
 
   s1: {v?: number} = {}
 
-  isLogin$ = this.ls.isLogin$
-
   constructor(private ls: LocalStorageService) { }
 
   ngOnInit(): void {

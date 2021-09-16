@@ -61,7 +61,7 @@ export class WatchService implements OnDestroy {
   }
 
   saveResults(results: DetectingResult[]) {
-    return of(results).pipe(delay(2000), tap(ret => this.ls.setJson('test', ret)))
+    // return of(results).pipe(delay(2000), tap(ret => this.ls.setJson('test', ret)))
   }
 
   private async loadModel() {

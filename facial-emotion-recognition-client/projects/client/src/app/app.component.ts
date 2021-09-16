@@ -10,7 +10,10 @@ import { filter, map } from 'rxjs/operators';
 })
 export class AppComponent {
 
-  isLogin$ = this.ls.isLogin$
+  isLogin$ = this.ls.authorization$.pipe(
+    map(token => !!token)
+  )
+
   routeData$ = this.router.events.pipe(
     filter(e => e instanceof RoutesRecognized),
     map(e => e instanceof RoutesRecognized ? e?.state?.root?.firstChild?.data : {})
@@ -24,7 +27,7 @@ export class AppComponent {
   }
 
   logout() {
-    this.ls.setIsLogin(false)
+    this.ls.setAuthorization('')
     this.router.navigateByUrl('')
   }
 

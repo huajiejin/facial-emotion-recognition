@@ -5,6 +5,7 @@ import {MatIconModule} from '@angular/material/icon'
 import {MatTooltipModule} from '@angular/material/tooltip'
 import {MatFormFieldModule} from '@angular/material/form-field'
 import {MatInputModule} from '@angular/material/input'
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +21,7 @@ import { OnPushComponent } from './components/on-push/on-push.component';
 import { DemoComponent } from './pages/demo/demo.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { HttpClientModule } from '@angular/common/http';
 
 const matModules = [
   MatButtonModule,
@@ -27,6 +29,7 @@ const matModules = [
   MatTooltipModule,
   MatFormFieldModule,
   MatInputModule,
+  MatSnackBarModule,
 ]
 
 @NgModule({
@@ -48,6 +51,7 @@ const matModules = [
     ServicesModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+    HttpClientModule,
     ...matModules,
   ],
   providers: [],
