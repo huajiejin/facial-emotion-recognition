@@ -2,7 +2,7 @@ package io.github.huajiejin.facialemotionrecognitionserver.api.watchlog;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import io.github.huajiejin.facialemotionrecognitionserver.api.course.Course;
-import io.github.huajiejin.facialemotionrecognitionserver.datajpa.User;
+import io.github.huajiejin.facialemotionrecognitionserver.api.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 public class WatchLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
