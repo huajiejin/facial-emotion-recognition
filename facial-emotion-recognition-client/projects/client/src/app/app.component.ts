@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
 import { LocalStorageService } from 'projects/services/src/lib/local-storage.service';
+import { UserService } from 'projects/services/src/public-api';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
@@ -10,9 +11,7 @@ import { filter, map } from 'rxjs/operators';
 })
 export class AppComponent {
 
-  isLogin$ = this.ls.authorization$.pipe(
-    map(token => !!token)
-  )
+  isLogin$ = this.userService.isLogin$
 
   routeData$ = this.router.events.pipe(
     filter(e => e instanceof RoutesRecognized),
@@ -22,7 +21,7 @@ export class AppComponent {
   constructor(
     private ls: LocalStorageService,
     private router: Router,
-    private route: ActivatedRoute
+    private userService: UserService,
   ) {
   }
 

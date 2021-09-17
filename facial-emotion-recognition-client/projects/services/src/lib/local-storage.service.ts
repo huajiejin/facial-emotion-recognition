@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalStorageService implements Storage {
-  private _storageChanged$ = new Subject<RawStorageChangeEvent>()
-  public storageChanged$ = this._storageChanged$.asObservable()
 
   private get storage(): Storage {
     return window.localStorage
@@ -35,30 +32,16 @@ export class LocalStorageService implements Storage {
 
   setItem(key: string, value: string): void {
     this.storage.setItem(key, value)
-    this._storageChanged$.next({key, value})
   }
 
-  private getValueObservable<T extends StorageChangeEvent>(ob$: Observable<T>, key: string, fn: (key: string) => T['value'] | null) {
-    return ob$.pipe(
-      filter(e => e.key === key),
-      map(e => e.value),
-      startWith(fn(key)),
-    )
-  }
-
+  private authorization$bs = new BehaviorSubject(this.getItem('authorization'))
+  authorization$ = this.authorization$bs.asObservable()
   setAuthorization(authorization: string) {
     this.setItem('authorization', authorization)
+    this.authorization$bs.next(authorization)
   }
-  get authorization$() {
-    return this.getValueObservable(this._storageChanged$, 'authorization', this.getItem.bind(this))
+  getAuthorization() {
+    return this.authorization$bs.getValue()
   }
 
-}
-
-interface StorageChangeEvent {
-  key: string,
-  value: string
-}
-
-interface RawStorageChangeEvent extends StorageChangeEvent {
 }

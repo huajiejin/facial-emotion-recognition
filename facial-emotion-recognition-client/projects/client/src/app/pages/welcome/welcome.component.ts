@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'projects/services/src/lib/local-storage.service';
-import { filter, map } from 'rxjs/operators';
+import { UserService } from 'projects/services/src/lib/user.service';
+import { Observable, of } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-welcome',
@@ -9,16 +11,25 @@ import { filter, map } from 'rxjs/operators';
 })
 export class WelcomeComponent implements OnInit {
 
-  public username$ = this.ls.authorization$.pipe(
-    map(token => {
-      const tokenBody = token?.split('.')[1]
-      return tokenBody ? JSON.parse(atob(tokenBody)).sub : ''
-    })
+  isLogin$ = this.userService.isLogin$
+
+  welcomeMsg$ = this.isLogin$.pipe(
+    switchMap(() => this.user$ || of()),
+    map(user => `${user?.username || ''}你好，欢迎来到上课系统！`),
   )
 
-  constructor(public ls: LocalStorageService) { }
+  user$?: Observable<any>
+
+  constructor(
+    private ls: LocalStorageService,
+    private userService: UserService,
+  ) { }
 
   ngOnInit(): void {
+    this.user$ = this.isLogin$.pipe(
+      filter(isLogin => isLogin),
+      switchMap(() => this.userService.getUser())
+    )
   }
 
 }

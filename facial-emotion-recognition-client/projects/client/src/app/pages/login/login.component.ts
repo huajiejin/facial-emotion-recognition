@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'projects/services/src/lib/local-storage.service';
-import { LoginService } from './login.service';
+import { UserService } from 'projects/services/src/lib/user.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private ls: LocalStorageService,
     private fb: FormBuilder,
     private router: Router,
-    private loginService: LoginService,
+    private userService: UserService,
     private snackBar: MatSnackBar,
   ) {}
 
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value
-      this.loginService.login(username, password).subscribe(
+      this.userService.login(username, password).subscribe(
         res => this.postLogin(res.result),
         _ => this.openSnackBar('账号或密码错误'),
       )
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   register() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value
-      this.loginService.register(username, password).subscribe(
+      this.userService.register(username, password).subscribe(
         res => this.postLogin(res.result),
         _ => this.openSnackBar('注册失败'),
       )

@@ -15,13 +15,13 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { LoginComponent } from './pages/login/login.component';
 import { CourseComponent } from './pages/course/course.component';
 import { WatchComponent } from './pages/watch/watch.component';
-import { ServicesModule } from 'projects/services/src/public-api';
 import { CommonModule } from '@angular/common';
 import { OnPushComponent } from './components/on-push/on-push.component';
 import { DemoComponent } from './pages/demo/demo.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthorizationInterceptor } from './interceptors/authorization.interceptor';
 
 const matModules = [
   MatButtonModule,
@@ -48,13 +48,14 @@ const matModules = [
     BrowserAnimationsModule,
     CommonModule,
     ComponentsModule,
-    ServicesModule,
     ReactiveFormsModule,
     FlexLayoutModule,
     HttpClientModule,
     ...matModules,
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,6 @@
 
-<ng-template [ngIf]="username$ | async" [ngIfElse]="toLogin">
-	<h2>{{(username$ | async)}}你好，欢迎来到上课系统！</h2>
+<ng-template [ngIf]="isLogin$ | async" [ngIfElse]="toLogin">
+	<h2>{{welcomeMsg$ | async}}</h2>
 	<button mat-raised-button color="primary" routerLink="course">选择课程</button>
 </ng-template>
 <ng-template #toLogin>

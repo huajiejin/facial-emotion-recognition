@@ -2,6 +2,6 @@
  * Public API Surface of services
  */
 
-export * from './lib/services.service';
-export * from './lib/services.component';
-export * from './lib/services.module';
+export * from './lib/local-storage.service';
+export * from './lib/user.service';
+export * from './lib/log.service';
