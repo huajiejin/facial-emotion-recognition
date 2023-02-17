@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subject, BehaviorSubject, Observable, of } from 'rxjs';
-import { filter, map, switchMap, take, tap, pairwise, takeUntil, scan, startWith, mergeMap, debounceTime, throttleTime, shareReplay, buffer } from 'rxjs/operators';
-import { DetectingResult, WatchService } from './watch.service';
-import { create } from 'rxjs-spy'
-import { tag } from 'rxjs-spy/operators'
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { filter, map, switchMap, take, takeUntil, scan, startWith, shareReplay, buffer } from 'rxjs/operators';
+import { WatchService } from './watch.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -12,19 +10,19 @@ import { Location } from '@angular/common';
   styleUrls: ['./watch.component.scss']
 })
 export class WatchComponent implements OnInit, OnDestroy, AfterViewInit {
-  private _ngOnInit$ = new Subject()
-  private _ngAfterViewInit$ = new Subject()
-  private _ngOnDestroy$ = new Subject()
+  private ngOnInit$$ = new Subject()
+  private ngAfterViewInit$$ = new Subject()
+  private ngOnDestroy$$ = new Subject()
 
   @ViewChild('webcam') webcamVideo?: ElementRef<HTMLVideoElement>
   get webcamVideoEl() {
-    if (this.webcamVideo?.nativeElement instanceof HTMLVideoElement) return this.webcamVideo?.nativeElement
-    else return null
+    const el = this.webcamVideo?.nativeElement
+    return el instanceof HTMLVideoElement ? el : null
   }
 
-  private _webcamOpening$ = new Subject<boolean>()
-  webcamOpening$ = this._webcamOpening$.pipe(scan((acc, value) => value === undefined ? !acc : value, true), startWith(true))
-  webcamOpening$$ = this.webcamOpening$.subscribe(opening => {
+  private webcamOpening$$ = new Subject<boolean>()
+  webcamOpening$ = this.webcamOpening$$.pipe(scan((acc, value) => value === undefined ? !acc : value, true), startWith(true))
+  webcamOpeningSub = this.webcamOpening$.subscribe(opening => {
     if (opening) {
       this.ws.getWebcamStream().pipe(take(1)).subscribe(s => this._webcamStream$.next(s))
     } else {
@@ -39,22 +37,27 @@ export class WatchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   playingTime$?: Observable<string>
 
-  detectingResult$ = this._ngAfterViewInit$.pipe(
+  detectingResult$ = this.ngAfterViewInit$$.pipe(
     switchMap(() => this.webcamOpening$),
-    filter(opening => opening),
+    filter(opening => opening && this.webcamVideoEl instanceof HTMLVideoElement),
     switchMap(() => this.ws.startDetecting(this.webcamVideoEl!).pipe(
       takeUntil(this.webcamOpening$.pipe(filter(opening => !opening))),
     )),
     shareReplay(),
   )
-  detectingResult$$ = this.detectingResult$.subscribe(console.log)
-  detectingResultBuffer$ = this.detectingResult$.pipe(buffer(this._ngOnDestroy$))
-  detectingResultBuffer$$ = this.detectingResultBuffer$.subscribe(console.warn)
+  detectingResultSub = this.detectingResult$.subscribe(console.log)
+  detectingResultBuffer$ = this.detectingResult$.pipe(buffer(this.ngOnDestroy$$))
 
-  // emotionText$ = of('x')
+  saveResults$$ = new Subject()
+  saveResultsSub = this.detectingResult$.pipe(
+    buffer(this.saveResults$$),
+    switchMap(results => this.ws.saveResults(results))
+  ).subscribe()
+
   emotionText$ = this.detectingResult$.pipe(
     // throttleTime(2000),
-    map(({ value, expressionCn }) => value ? `当前情绪可能是${expressionCn}` : '未检测到人脸'),
+    // map(({ value, expressionCn }) => value ? `当前情绪可能是${expressionCn}` : '未检测到人脸'),
+    map(({ value, expression }) => value ? expression : 'Please try to turn your face around'),
   )
 
   webcamButtonText$ = this.webcamOpening$.pipe(map(opening => opening ? '关闭摄像头' : '开启摄像头'))
@@ -65,44 +68,36 @@ export class WatchComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this._ngOnInit$.next()
-    this._ngOnInit$.complete()
+    this.ngOnInit$$.next()
+    this.ngOnInit$$.complete()
     
     this.playingTime$ = this.ws.startTimer()
   }
 
   ngAfterViewInit(): void {
-    this._ngAfterViewInit$.next()
-    this._ngAfterViewInit$.complete()
-
-    console.log('ngAfterViewInit', this.webcamVideoEl)
+    this.ngAfterViewInit$$.next()
+    this.ngAfterViewInit$$.complete()
   }
 
   ngOnDestroy(): void {
-    this._ngOnDestroy$.next()
-    this._ngOnDestroy$.complete()
+    this.ngOnDestroy$$.next()
+    this.ngOnDestroy$$.complete()
 
-    this._webcamOpening$.next(false)
-    this.detectingResult$$.unsubscribe()
-    this.detectingResultBuffer$$.unsubscribe()
-    this.webcamOpening$$.unsubscribe()
+    this.webcamOpening$$.next(false)
+    this.detectingResultSub.unsubscribe()
+    this.saveResultsSub.unsubscribe()
+    this.webcamOpeningSub.unsubscribe()
+
+    this.saveResults$$.complete()
   }
 
   toggleWebcam(opening?: boolean) {
-    this._webcamOpening$.next(opening)
+    this.webcamOpening$$.next(opening)
   }
 
   leave() {
     this.location.back()
-    // this.ws.saveResults([]).subscribe(console.log)
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  beforeunloadHandler(event: BeforeUnloadEvent) {
-    console.log('beforeunload', event)
-    // this.ws.saveResults([]).subscribe(console.log)
-    // event.preventDefault()
-    // event.returnValue = 'saving'
+    this.saveResults$$.next()
   }
 
 }

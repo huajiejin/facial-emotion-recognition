@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { from, interval, Observable, of } from 'rxjs'
 import { nets, detectSingleFace, TinyFaceDetectorOptions, FaceExpressions } from 'face-api.js';
-import { delay, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators'
-import { LocalStorageService } from 'projects/services/src/lib/local-storage.service';
+import { LogService } from 'projects/services/src/public-api';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ import { LocalStorageService } from 'projects/services/src/lib/local-storage.ser
 export class WatchService implements OnDestroy {
 
   constructor(
-    private ls: LocalStorageService
+    private http: HttpClient,
+    private log: LogService,
   ) { }
 
   ngOnDestroy(): void {
@@ -28,7 +30,6 @@ export class WatchService implements OnDestroy {
       switchMap(() => interval(period)),
       mergeMap(() => {
         const time = Date.now()
-        // console.log(time, (videoEl?.srcObject as MediaStream)?.id)
         return from(this.detect(videoEl)).pipe(
           map(result => ({ time, result }))
         )
@@ -37,14 +38,13 @@ export class WatchService implements OnDestroy {
         const expressions = result?.expressions
         const expression = expressions?.asSortedArray()?.[0]
         const expressionCn = WatchService.expressionsLevel[expression?.expression as ExpressionName]?.cn
-        return { time, value: this.expressionToValue(expression), expressions, expressionCn }
+        return { time, value: this.expressionToValue(expression), expressions, expression: expression?.expression, expressionCn }
       }),
     )
   }
 
   stopTracks(stream: MediaStream) {
     stream.getTracks().forEach(t => t.stop())
-    console.log('stopTracks', stream)
   }
 
   setTracksEnabled(stream: MediaStream, enabled: boolean) {
@@ -61,7 +61,10 @@ export class WatchService implements OnDestroy {
   }
 
   saveResults(results: DetectingResult[]) {
-    // return of(results).pipe(delay(2000), tap(ret => this.ls.setJson('test', ret)))
+    return this.http.post('/api/watch-log', {courseId: 1, emotion: JSON.stringify(results)}).pipe(
+      this.log.tap1('saveResults'),
+      shareReplay(),
+    )
   }
 
   private async loadModel() {
@@ -129,5 +132,6 @@ export interface DetectingResult {
   time: number,
   value?: number,
   expressions?: FaceExpressions,
+  expression?: string
   expressionCn?: string
 }

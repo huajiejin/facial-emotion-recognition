@@ -7,11 +7,12 @@ import { WatchComponent } from './pages/watch/watch.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 
 const routes: Routes = [
-  { path: '', component: WelcomeComponent, data: { title: '首页' } },
-  { path: 'login', component: LoginComponent, data: { title: '登录' } },
-  { path: 'course', component: CourseComponent, data: { title: '所有课程' } },
-  { path: 'watch/:id', component: WatchComponent, data: { title: '' } },
-  { path: 'demo', component: DemoComponent, data: { title: '测试' } },
+  { path: '', component: WatchComponent, data: { title: '首页' } },
+  // { path: '', component: WelcomeComponent, data: { title: '首页' } },
+  // { path: 'login', component: LoginComponent, data: { title: '登录' } },
+  // { path: 'course', component: CourseComponent, data: { title: '所有课程' } },
+  // { path: 'watch/:id', component: WatchComponent, data: { title: '' } },
+  // { path: 'demo', component: DemoComponent, data: { title: '测试' } },
 ];
 
 @NgModule({
