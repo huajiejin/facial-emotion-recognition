@@ -58,6 +58,7 @@ export class WatchComponent implements OnInit, OnDestroy, AfterViewInit {
     // throttleTime(2000),
     // map(({ value, expressionCn }) => value ? `当前情绪可能是${expressionCn}` : '未检测到人脸'),
     map(({ value, expression }) => value ? expression : 'Please try to turn your face around'),
+    startWith('Loading...'),
   )
 
   webcamButtonText$ = this.webcamOpening$.pipe(map(opening => opening ? '关闭摄像头' : '开启摄像头'))
